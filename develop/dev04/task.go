@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
+
 /*
 === Поиск анаграмм по словарю ===
 
@@ -19,6 +25,35 @@ package main
 Программа должна проходить все тесты. Код должен проходить проверки go vet и golint.
 */
 
-func main() {
+func FindAnagramSets(words *[]string) map[string][]string {
+	anagramSets := make(map[string][]string)
 
+	tempMap := make(map[string][]string)
+	for _, word := range *words {
+		loweredWord := strings.ToLower(word)
+		sortedWord := sortString(loweredWord)
+		tempMap[sortedWord] = append(tempMap[sortedWord], loweredWord)
+	}
+
+	for _, wordSet := range tempMap {
+		if len(wordSet) > 1 {
+			key := wordSet[0]
+			sort.Strings(wordSet)
+			anagramSets[key] = wordSet
+		}
+	}
+
+	return anagramSets
+}
+
+func sortString(s string) string {
+	chars := strings.Split(s, "")
+	sort.Strings(chars)
+	return strings.Join(chars, "")
+}
+
+func main() {
+	input := []string{"пятка", "пятак", "тяпка", "Слиток", "листок", "столик", "мышь"}
+	anagramSets := FindAnagramSets(&input)
+	fmt.Printf("%#v\n", anagramSets)
 }
